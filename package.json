@@ -7,11 +7,11 @@
     "sdd-kit": "./dist/cli.js"
   },
   "files": [
-    "dist",
-    "templates"
+    "dist"
   ],
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "dev": "tsx src/cli.ts",
     "test": "vitest",
     "lint": "eslint src/"

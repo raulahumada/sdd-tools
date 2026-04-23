@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
 import { initProject } from './commands/init.js';
 import { addSkill } from './commands/add.js';
