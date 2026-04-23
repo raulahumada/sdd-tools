@@ -2,8 +2,6 @@ import { Store } from '../core/store.js';
 import { GitUtils } from '../core/git-utils.js';
 import { SpecParser } from '../core/spec-parser.js';
 import { SkillResult, HandoffData, Decision } from '../core/types.js';
-import { join } from 'path';
-
 export async function handoffSkill(
   args: string[],
   projectRoot: string = process.cwd()
@@ -25,7 +23,8 @@ async function exportHandoff(args: string[], projectRoot: string): Promise<Skill
 
   const specs = await parser.findAllSpecs();
   const matchingSpec = specs.find(s => s.includes(feature));
-  const tasks = matchingSpec ? parser.parseTasks(join(projectRoot, matchingSpec)) : [];
+  const specDirForTasks = matchingSpec ? parser.resolveSpecDirectory(matchingSpec) : '';
+  const tasks = matchingSpec ? parser.parseTasks(specDirForTasks) : [];
 
   const decisionFiles = store.listFiles(feature, 'decisions').filter(f => f.startsWith('ADR'));
   const decisions: Decision[] = [];

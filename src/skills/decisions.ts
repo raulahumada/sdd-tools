@@ -29,20 +29,53 @@ async function add(args: string[], projectRoot: string): Promise<SkillResult> {
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 40);
   const filename = `${id}-${slug}.md`;
 
+  const pad = (text: string, hint: string) => {
+    const t = text.trim();
+    if (!t) return `> _${hint}_`;
+    if (t.length >= 40) return t;
+    return `${t}\n\n> _${hint}_`;
+  };
+
+  const ctxBlock = pad(
+    context,
+    'Completa: problema de negocio o técnico, restricciones, y qué pasaría si no se decide.'
+  );
+  const decBlock = pad(
+    decision,
+    'Completa: opción elegida de forma explícita (una frase que un nuevo dev entienda).'
+  );
+  const consBlock = pad(
+    consequences,
+    'Completa: trade-offs positivos y negativos, deuda introducida o evitada, impacto en equipos o despliegue.'
+  );
+
   const content = `# ${id}: ${title}
 
-**Status**: Accepted
-**Date**: ${new Date().toISOString().split('T')[0]}
-**Feature**: ${feature}
+**Estado:** Accepted  
+**Fecha:** ${new Date().toISOString().split('T')[0]}  
+**Feature / cambio:** ${feature}
 
-## Context
-${context}
+## Contexto
 
-## Decision
-${decision}
+${ctxBlock}
 
-## Consequences
-${consequences}
+## Decisión
+
+${decBlock}
+
+## Consecuencias
+
+${consBlock}
+
+## Alternativas consideradas
+
+_(Añade opciones descartadas y el motivo. Si no hubo alternativas reales, indica "no aplica" y por qué.)_
+
+## Validación
+
+- [ ] Alineada con el spec o propuesta activa del cambio
+- [ ] Comunicada si afecta API, datos o despliegue
+- [ ] Revisada por alguien del equipo _(opcional según criticidad)_
 `;
 
   const outputPath = store.writeSubDir(feature, 'decisions', filename, content);

@@ -1,5 +1,5 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 
 export class Store {
@@ -18,8 +18,11 @@ export class Store {
   }
 
   write(feature: string, filename: string, content: string): string {
-    const dir = this.ensureDir(feature);
-    const filePath = join(dir, filename);
+    const filePath = join(this.toolsDir, feature, filename);
+    const dir = dirname(filePath);
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
     writeFileSync(filePath, content, 'utf-8');
     return filePath;
   }

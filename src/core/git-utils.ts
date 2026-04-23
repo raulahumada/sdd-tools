@@ -11,7 +11,8 @@ export class GitUtils {
     try {
       return execSync(cmd, {
         cwd: this.projectRoot,
-        encoding: 'utf-8'
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore']
       }).trim();
     } catch {
       return '';

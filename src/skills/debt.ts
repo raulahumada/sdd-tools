@@ -24,7 +24,7 @@ async function scan(projectRoot: string): Promise<SkillResult> {
   const moduleMap = new Map<string, string[]>();
 
   for (const file of sourceFiles) {
-    const parts = file.split('/');
+    const parts = file.replace(/\\/g, '/').split('/');
     const moduleName = parts.length > 2 ? parts[1] : 'root';
     if (!moduleMap.has(moduleName)) moduleMap.set(moduleName, []);
     moduleMap.get(moduleName)!.push(file);

@@ -2,7 +2,7 @@ import { Store } from '../core/store.js';
 import { ASTUtils } from '../core/ast-utils.js';
 import { SkillResult, ReviewIssue } from '../core/types.js';
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 export async function reviewSkill(
   args: string[],
@@ -37,8 +37,10 @@ async function check(specPath: string | undefined, projectRoot: string): Promise
     issues.push(...checkAnyTypes(file, content));
   }
 
-  const featureName = specPath?.split('/').filter(Boolean).pop() || 'review';
-  const report = generateReviewReport(featureName, issues);
+  const featureName = specPath
+    ? basename(specPath.replace(/\\/g, '/').replace(/\/+$/, ''))
+    : 'review';
+  const report = generateReviewReport(featureName, issues, sourceFiles);
   const outputPath = store.write(featureName, 'review.md', report);
 
   const errorCount = issues.filter(i => i.severity === 'error').length;
@@ -67,7 +69,7 @@ async function showPatterns(projectRoot: string): Promise<SkillResult> {
 
 function checkInputValidation(file: string, content: string, lines: string[]): ReviewIssue[] {
   const issues: ReviewIssue[] = [];
-  const handlerRegex = /\.(post|put|patch)$$\s*['"`].+?['"`]/g;
+  const handlerRegex = /\.(post|put|patch)\s*\(\s*['"`].+?['"`]/g;
   let match;
 
   while ((match = handlerRegex.exec(content)) !== null) {
@@ -82,7 +84,7 @@ function checkInputValidation(file: string, content: string, lines: string[]): R
         file,
         line,
         issue: 'Missing input validation',
-        suggestion: 'Add input validation (Zod, Joi, or manual checks)',
+        suggestion: 'Añadir validación de entrada (Zod, Joi o comprobaciones manuales explícitas).',
         pattern: 'input-validation',
         patternFrequency: 0
       });
@@ -94,7 +96,7 @@ function checkInputValidation(file: string, content: string, lines: string[]): R
 
 function checkErrorHandling(file: string, content: string): ReviewIssue[] {
   const issues: ReviewIssue[] = [];
-  const asyncRegex = /async\s+(?:function\s+)?(?:\w+\s*)?\([^)]*$$\s*\{/g;
+  const asyncRegex = /async\s+(?:function\s+)?(?:\w+\s*)?\([^)]*\)\s*\{/g;
   let match;
 
   while ((match = asyncRegex.exec(content)) !== null) {
@@ -109,7 +111,7 @@ function checkErrorHandling(file: string, content: string): ReviewIssue[] {
         file,
         line,
         issue: 'Async function without try/catch',
-        suggestion: 'Wrap in try/catch with proper error response',
+        suggestion: 'Envolver en try/catch y devolver o propagar errores de forma controlada.',
         pattern: 'error-handling',
         patternFrequency: 0
       });
@@ -132,7 +134,7 @@ function checkConsoleLogs(file: string, content: string): ReviewIssue[] {
       file,
       line,
       issue: `console.${match[1]} left behind`,
-      suggestion: 'Remove or replace with proper logger',
+      suggestion: 'Eliminar o sustituir por un logger estructurado (p. ej. pino) según convención del proyecto.',
       pattern: 'console-log',
       patternFrequency: 0
     });
@@ -154,7 +156,7 @@ function checkTodos(file: string, content: string): ReviewIssue[] {
       file,
       line,
       issue: `${match[1]}: ${match[2] || 'no description'}`,
-      suggestion: 'Address or convert to tracked issue',
+      suggestion: 'Resolver o convertir en ticket/issue rastreable.',
       pattern: 'todo-fixme',
       patternFrequency: 0
     });
@@ -176,7 +178,7 @@ function checkAnyTypes(file: string, content: string): ReviewIssue[] {
       file,
       line,
       issue: 'Type "any" used',
-      suggestion: 'Replace with proper type',
+      suggestion: 'Sustituir por un tipo explícito o inferido.',
       pattern: 'missing-types',
       patternFrequency: 0
     });
@@ -196,7 +198,15 @@ function findBlockEnd(content: string, start: number): number {
   return content.length;
 }
 
-function generateReviewReport(featureName: string, issues: ReviewIssue[]): string {
+function posixPath(file: string): string {
+  return file.replace(/\\/g, '/');
+}
+
+function generateReviewReport(
+  featureName: string,
+  issues: ReviewIssue[],
+  scannedFiles: string[]
+): string {
   const errors = issues.filter(i => i.severity === 'error');
   const warnings = issues.filter(i => i.severity === 'warning');
   const infos = issues.filter(i => i.severity === 'info');
@@ -207,12 +217,30 @@ function generateReviewReport(featureName: string, issues: ReviewIssue[]): strin
   report += `- 🟡 Warnings: ${warnings.length}\n`;
   report += `- ℹ️ Info: ${infos.length}\n\n`;
 
+  report += `## Alcance del análisis automático\n\n`;
+  report += `- **Archivos fuente revisados:** ${scannedFiles.length} (patrones \`src/**/*.ts\`, \`src/**/*.tsx\`, \`src/**/*.js\`, \`src/**/*.jsx\`, excl. tests).\n`;
+  report += `- **Reglas aplicadas:** rutas mutadoras sin validación aparente; funciones \`async\` sin \`try/catch\`; \`console.log|debug|info\`; comentarios TODO/FIXME; uso de tipo \`any\`.\n`;
+  if (scannedFiles.length > 0) {
+    const sample = scannedFiles.slice(0, 20).map(f => `- \`${posixPath(f)}\``).join('\n');
+    report += `\n**Muestra de archivos** (máx. 20):\n\n${sample}\n`;
+    if (scannedFiles.length > 20) {
+      report += `\n_…y ${scannedFiles.length - 20} más._\n`;
+    }
+  }
+  report += '\n';
+
+  if (errors.length === 0 && warnings.length === 0) {
+    report += `## Estado general\n\n`;
+    report +=
+      'No se detectaron **errores** ni **advertencias** con las heurísticas actuales. Los ítems en **Info** son sugerencias (p. ej. logging) y no bloquean por sí solos.\n\n';
+  }
+
   if (errors.length > 0) {
     report += `## 🔴 Errors\n\n`;
     for (const i of errors) {
       report += `### ${i.issue}\n`;
-      report += `- **File:** ${i.file}${i.line ? `:${i.line}` : ''}\n`;
-      report += `- **Suggestion:** ${i.suggestion}\n\n`;
+      report += `- **Archivo:** \`${posixPath(i.file ?? '')}\`${i.line ? `, línea ${i.line}` : ''}\n`;
+      report += `- **Sugerencia:** ${i.suggestion}\n\n`;
     }
   }
 
@@ -220,8 +248,8 @@ function generateReviewReport(featureName: string, issues: ReviewIssue[]): strin
     report += `## 🟡 Warnings\n\n`;
     for (const i of warnings) {
       report += `### ${i.issue}\n`;
-      report += `- **File:** ${i.file}${i.line ? `:${i.line}` : ''}\n`;
-      report += `- **Suggestion:** ${i.suggestion}\n\n`;
+      report += `- **Archivo:** \`${posixPath(i.file ?? '')}\`${i.line ? `, línea ${i.line}` : ''}\n`;
+      report += `- **Sugerencia:** ${i.suggestion}\n\n`;
     }
   }
 
@@ -229,9 +257,18 @@ function generateReviewReport(featureName: string, issues: ReviewIssue[]): strin
     report += `## ℹ️ Info\n\n`;
     for (const i of infos) {
       report += `### ${i.issue}\n`;
-      report += `- **File:** ${i.file}${i.line ? `:${i.line}` : ''}\n`;
-      report += `- **Suggestion:** ${i.suggestion}\n\n`;
+      report += `- **Archivo:** \`${posixPath(i.file ?? '')}\`${i.line ? `, línea ${i.line}` : ''}\n`;
+      report += `- **Sugerencia:** ${i.suggestion}\n\n`;
     }
+  }
+
+  report += `## Próximos pasos sugeridos\n\n`;
+  if (errors.length || warnings.length) {
+    report +=
+      '1. Corregir cada error y, si aplica, las advertencias que afecten contrato o seguridad.\n2. Volver a ejecutar `npx sdd-kit review check` (con la misma ruta de feature si la usas).\n';
+  } else {
+    report +=
+      '1. Revisar manualmente lógica de negocio, límites y casos borde (el pre-review no los cubre).\n2. Si aplica, sustituir `console.log` por logger o eliminarlo antes de merge a producción.\n';
   }
 
   return report;

@@ -2,8 +2,8 @@ import { SpecParser } from '../core/spec-parser.js';
 import { ASTUtils } from '../core/ast-utils.js';
 import { Store } from '../core/store.js';
 import { SkillResult, Requirement, TestCase, RequirementCoverage } from '../core/types.js';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
+import { glob } from 'glob';
 
 export async function testgapSkill(
   args: string[],
@@ -16,19 +16,25 @@ export async function testgapSkill(
   return { success: false, message: 'Usage: sdd-kit testgap analyze <spec-path>' };
 }
 
+
 async function analyze(specPath: string, projectRoot: string): Promise<SkillResult> {
   const parser = new SpecParser(projectRoot);
   const ast = new ASTUtils(projectRoot);
   const store = new Store(projectRoot);
 
   const specDir = await parser.findSpec(specPath);
-  const specFilePath = join(projectRoot, specDir, 'spec.md');
-  
-  if (!existsSync(specFilePath)) {
-    return { success: false, message: `spec.md not found in ${specDir}` };
+
+  // Buscar spec.md O proposal.md
+  const changeRoot = join(projectRoot, specDir);
+  const hasSpecDocs =
+    !!parser.findSpecFile(specDir) ||
+    (await glob('**/spec.md', { cwd: changeRoot })).length > 0;
+
+  if (!hasSpecDocs) {
+    return { success: false, message: `No spec.md or proposal.md found in ${specDir}` };
   }
 
-  const requirements = parser.parseRequirements(specFilePath);
+  const requirements = await parser.parseRequirementsFromChange(specDir);
 
   const testFiles = await ast.findTestFiles();
   const allTests: TestCase[] = [];
@@ -38,7 +44,7 @@ async function analyze(specPath: string, projectRoot: string): Promise<SkillResu
 
   const coverage = mapRequirementsToTests(requirements, allTests);
 
-  const featureName = specPath.split('/').filter(Boolean).pop() || 'unknown';
+  const featureName = basename(specDir.replace(/\\/g, '/'));
   const report = generateTestGapReport(featureName, coverage);
   const outputPath = store.write(featureName, 'testgap.md', report);
 
@@ -54,11 +60,6 @@ async function analyze(specPath: string, projectRoot: string): Promise<SkillResu
     message: `${percentage}% requirement coverage (${covered}/${total})`,
     outputPath
   };
-}
-
-function specDir(dirOrPath: string, projectRoot: string): string {
-  if (existsSync(join(projectRoot, dirOrPath, 'spec.md'))) return dirOrPath;
-  return dirOrPath;
 }
 
 function mapRequirementsToTests(

@@ -3,6 +3,7 @@ import { join } from 'path';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { CURSOR_RULES } from '../templates/cursor/rules/sdd-skills.js';
+import { CURSOR_SKILLS } from '../templates/cursor/skills/index.js';
 import { CURSOR_COMMANDS } from '../templates/cursor/commands/index.js';
 
 interface InitOptions {
@@ -164,7 +165,7 @@ async function setupCursor(
     console.log(chalk.yellow('  ⚠') + ' .cursor/rules/sdd-skills.mdc (already exists, skipped)');
   }
 
-  // Commands
+  // Commands (.cursor/commands/sdd-<tool>.mdc)
   const commandsDir = join(projectRoot, '.cursor', 'commands');
   mkdirSync(commandsDir, { recursive: true });
 
@@ -180,7 +181,27 @@ async function setupCursor(
       console.log(chalk.yellow('  ⚠') + ` .cursor/commands/sdd-${tool}.mdc (already exists, skipped)`);
     }
   }
+
+  // Skills (.cursor/skills/sdd-<tool>/SKILL.md)
+  const skillsDir = join(projectRoot, '.cursor', 'skills');
+
+  for (const tool of enabledTools) {
+    const skillContent = CURSOR_SKILLS[tool];
+    if (!skillContent) continue;
+
+    const skillDir = join(skillsDir, `sdd-${tool}`);
+    mkdirSync(skillDir, { recursive: true });
+
+    const skillPath = join(skillDir, 'SKILL.md');
+    if (!existsSync(skillPath) || force) {
+      writeFileSync(skillPath, skillContent);
+      console.log(chalk.green('  ✓') + ` Created .cursor/skills/sdd-${tool}/SKILL.md`);
+    } else {
+      console.log(chalk.yellow('  ⚠') + ` .cursor/skills/sdd-${tool}/SKILL.md (already exists, skipped)`);
+    }
+  }
 }
+
 
 function createSddToolsDirs(projectRoot: string, enabledTools: string[]): void {
   const toolsDir = join(projectRoot, 'sdd-tools');

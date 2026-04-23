@@ -2,8 +2,6 @@ import { Store } from '../core/store.js';
 import { GitUtils } from '../core/git-utils.js';
 import { SpecParser } from '../core/spec-parser.js';
 import { SkillResult, Session } from '../core/types.js';
-import { join } from 'path';
-
 export async function contextSkill(
   args: string[],
   projectRoot: string = process.cwd()
@@ -27,7 +25,8 @@ async function save(args: string[], projectRoot: string): Promise<SkillResult> {
   const parser = new SpecParser(projectRoot);
   const specs = await parser.findAllSpecs();
   const matchingSpec = specs.find(s => s.includes(feature));
-  const tasks = matchingSpec ? parser.parseTasks(join(projectRoot, matchingSpec)) : [];
+  const specDirForTasks = matchingSpec ? parser.resolveSpecDirectory(matchingSpec) : '';
+  const tasks = matchingSpec ? parser.parseTasks(specDirForTasks) : [];
 
   const tasksCompleted = tasks.filter(t => t.done).map(t => t.name);
   const tasksPending = tasks.filter(t => !t.done).map(t => t.name);

@@ -70,6 +70,7 @@ program
 program
   .command('context <action> [rest...]')
   .description('Save or restore session context')
+  .allowUnknownOption()
   .action(async (action: string, rest?: string[]) => {
     const args = [action, ...(rest || [])];
     const result = await contextSkill(args, process.cwd());
@@ -82,6 +83,7 @@ program
 program
   .command('decisions <action> [rest...]')
   .description('Capture or search architectural decisions')
+  .allowUnknownOption()
   .action(async (action: string, rest?: string[]) => {
     const args = [action, ...(rest || [])];
     const result = await decisionsSkill(args, process.cwd());
@@ -129,6 +131,7 @@ program
 program
   .command('handoff <action> [rest...]')
   .description('Export or import context between agents')
+  .allowUnknownOption()
   .action(async (action: string, rest?: string[]) => {
     const args = [action, ...(rest || [])];
     const result = await handoffSkill(args, process.cwd());

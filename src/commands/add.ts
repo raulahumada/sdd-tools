@@ -2,6 +2,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 import { CURSOR_COMMANDS } from '../templates/cursor/commands/index.js';
+import { CURSOR_SKILLS } from '../templates/cursor/skills/index.js';
 
 const VALID_SKILLS = ['impact', 'context', 'decisions', 'review', 'testgap', 'debt', 'handoff'];
 
@@ -35,18 +36,14 @@ export async function addSkill(skill: string, projectRoot: string): Promise<void
   writeFileSync(configPath, updated);
 
   // Crear command .mdc si no existe
-  const commandPath = join(projectRoot, '.cursor', 'commands', `sdd-${skill}.mdc`);
-  const commandContent = CURSOR_COMMANDS[skill];
-
-  if (!existsSync(commandPath) && commandContent) {
-    const commandsDir = join(projectRoot, '.cursor', 'commands');
-    if (!existsSync(commandsDir)) {
-      mkdirSync(commandsDir, { recursive: true });
-    }
-    writeFileSync(commandPath, commandContent);
-    console.log(chalk.green(`  ✓`) + ` Created .cursor/commands/sdd-${skill}.mdc`);
+  const skillDir = join(projectRoot, '.cursor', 'skills', `sdd-${skill}`);
+  mkdirSync(skillDir, { recursive: true });
+  const skillPath = join(skillDir, 'SKILL.md');
+  
+  if (!existsSync(skillPath) &&  CURSOR_SKILLS[skill]) {
+    writeFileSync(skillPath, CURSOR_SKILLS[skill]);
+    console.log(chalk.green(`  ✓`) + ` Created .cursor/skills/sdd-${skill}/SKILL.md`);
   }
-
   // Crear directorio en sdd-tools si no existe
   const toolsDir = join(projectRoot, 'sdd-tools', skill);
   if (!existsSync(toolsDir)) {

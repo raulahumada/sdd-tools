@@ -10,7 +10,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "implement", "build", "start working on" referring to a spec
   
   ### How to execute
-  1. Run: \`npx sdd-kit impact analyze specs/<feature-name>/\`
+  1. Run: \`npx sdd-kit impact analyze <ruta-spec-o-cambio>/\` (ej. \`openspec/changes/<change>/\` o \`specs/<feature>/\`)
   2. Read: \`sdd-tools/<feature-name>/impact.md\`
   3. Present the analysis to the user BEFORE starting implementation
   
@@ -45,7 +45,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "review this", "check this", "is this good?"
   
   ### How to execute
-  1. Run: \`npx sdd-kit review check specs/<feature-name>/\`
+  1. Run: \`npx sdd-kit review check [openspec/changes/<change>/|specs/<feature>/]\` (argumento opcional; sin él el informe va a \`sdd-tools/review/review.md\`)
   2. Read: \`sdd-tools/<feature-name>/review.md\`
   3. Fix ALL errors before marking task as done
   4. Fix warnings if quick fixes (< 2 min)
@@ -77,7 +77,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "are we covered?", "check test coverage"
   
   ### How to execute
-  1. Run: \`npx sdd-kit testgap analyze specs/<feature-name>/\`
+  1. Run: \`npx sdd-kit testgap analyze openspec/changes/<change>/\` o \`specs/<feature>/\`
   2. Read: \`sdd-tools/<feature-name>/testgap.md\`
   3. If coverage < 100%, write the missing tests
   4. Re-run to confirm 100%
@@ -212,7 +212,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   
     return `---
   description: SDD auto-skills — run automatically during spec-driven development
-  globs: ["specs/**/*.md", "src/**/*.ts"]
+  globs: ["specs/**/*.md", "openspec/**/*.md", "src/**/*.{ts,tsx,js,jsx}"]
   ---
   
   # SDD Skills — Spec-Driven Development Toolkit

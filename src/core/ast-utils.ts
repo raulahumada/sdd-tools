@@ -13,9 +13,13 @@ export class ASTUtils {
   async findTestFiles(): Promise<string[]> {
     const patterns = [
       'src/**/*.test.ts',
+      'src/**/*.test.js',
       'src/**/*.spec.ts',
+      'src/**/*.spec.js',
       'src/**/__tests__/**/*.ts',
-      'tests/**/*.ts'
+      'src/**/__tests__/**/*.js',
+      'tests/**/*.ts',
+      'tests/**/*.js'
     ];
 
     const files: string[] = [];
@@ -27,11 +31,15 @@ export class ASTUtils {
   }
 
   async findSourceFiles(): Promise<string[]> {
-    const files = await glob('src/**/*.ts', { cwd: this.projectRoot });
-    return files.filter(f =>
-      !f.includes('.test.') &&
-      !f.includes('.spec.') &&
-      !f.includes('__tests__')
+    const patterns = ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.js', 'src/**/*.jsx'];
+    const files = (
+      await Promise.all(patterns.map(p => glob(p, { cwd: this.projectRoot })))
+    ).flat();
+    return [...new Set(files)].filter(
+      f =>
+        !f.includes('.test.') &&
+        !f.includes('.spec.') &&
+        !f.includes('__tests__')
     );
   }
 
@@ -42,7 +50,7 @@ export class ASTUtils {
     const content = readFileSync(fullPath, 'utf-8');
     const tests: TestCase[] = [];
 
-    const testRegex = /(?:test|it)$$\s*['"`](.+?)['"`]/g;
+    const testRegex = /\b(?:test|it)\s*\(\s*['"`](.+?)['"`]/g;
     let match;
 
     while ((match = testRegex.exec(content)) !== null) {
@@ -86,14 +94,15 @@ export class ASTUtils {
       const allFiles = await this.findSourceFiles();
       const testFiles = await this.findTestFiles();
 
+      const fileStem = file.replace(/\.(tsx?|jsx?)$/i, '');
       const importers = allFiles.filter(f => {
         const imports = this.extractImports(f);
-        return imports.some(imp => imp.includes(file.replace('.ts', '')));
+        return imports.some(imp => imp.includes(fileStem));
       });
 
       const testImporters = testFiles.filter(f => {
         const imports = this.extractImports(f);
-        return imports.some(imp => imp.includes(file.replace('.ts', '')));
+        return imports.some(imp => imp.includes(fileStem));
       });
 
       const coupling: AffectedModule['coupling'] =
@@ -122,7 +131,7 @@ export class ASTUtils {
         .map(m => m.path),
       breakingChanges: affectedModules
         .filter(m => m.risk === 'HIGH')
-        .map(m => `Changes to {m.path} may break ${m.testsAtRisk} dependent modules`),
+        .map(m => `Changes to ${m.path} may break ${m.testsAtRisk} dependent modules`),
       testsAtRisk: affectedModules.flatMap(m =>
         Array(m.testsAtRisk).fill(`${m.path} tests`)
       )
@@ -131,7 +140,7 @@ export class ASTUtils {
 
   private extractAssertions(body: string): string[] {
     const assertions: string[] = [];
-    const assertRegex = /expect\(.+?\)$$(?:\.not)?\.\w+$$.+?$$/g;
+    const assertRegex = /(?:expect|assert\.(?:strictEqual|deepEqual|ok))\s*\(/g;
     let match;
     while ((match = assertRegex.exec(body)) !== null) {
       assertions.push(match[0]);
