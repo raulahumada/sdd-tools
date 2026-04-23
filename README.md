@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  CLI y plantillas para <strong>Spec-Driven Development</strong> con asistentes de código (Cursor, VS Code, Claude Code…).
+  <strong>Spec-Driven Development</strong> para tu repo: specs y cambios OpenSpec entran, <strong>informes claros</strong> y <strong>plantillas Cursor</strong> salen — sin sustituir a OpenSpec ni a tu flujo de propuestas.
 </p>
 
 <p align="center">
@@ -15,127 +15,146 @@
   -->
 </p>
 
-<details>
-<summary><strong>Resumen en una frase</strong></summary>
+Las organizaciones que más escalan el software **documentan antes (o junto) al código**: RFCs, diseños, propuestas de cambio. **sdd-tools** lleva esa disciplina al día a día con **IA en el IDE**: lee tus carpetas de spec, resume riesgo y brechas, y deja **skills y comandos** listos para Cursor.
 
-Analiza **carpetas de specs / cambios OpenSpec**, escribe informes en **`sdd-tools/`** y genera **comandos slash**, **skills** y **reglas** para tu IDE — sin sustituir a OpenSpec ni a tu propio flujo de propuestas.
-
-</details>
-
-<p></p>
-
-## Filosofía
-
-```text
-→ ligero, no un framework monolítico
-→ CLI primero: integrable en CI y en flujos con IA
-→ informes legibles por humanos y por el modelo
-→ compatible con brownfield: specs sueltos u openspec/changes/
-→ Windows y paths relativos tratados de forma explícita
+```
+Describe el cambio en specs  →  sdd-tools analiza y escribe informes  →  tú (o la IA) implementáis con contexto
 ```
 
-> [!TIP]
-> **¿Usas OpenSpec u otro layout de cambios?** Pasa el **directorio del cambio** (p. ej. `openspec/changes/mi-feature/`) a `impact analyze` y `testgap analyze`. Los informes resumen `proposal.md`, `design.md`, `tasks.md` y los `**/spec.md` sin volcar todo el Markdown.
+**No es un generador de código.** Es una **herramienta de claridad**: el spec sigue siendo la fuente de verdad; sdd-tools añade **capa de análisis, continuidad y calidad** encima de lo que ya tengas (`openspec/changes`, `openspec/specs`, markdown).
 
-> [!NOTE]
-> sdd-tools **no** define el formato de tus specs: se apoya en lo que ya exista (`specs/`, `openspec/changes/`, `openspec/specs/`). Para el flujo *propose → apply → archive* mira [OpenSpec](https://github.com/Fission-AI/OpenSpec); sdd-tools encaja como **capa de análisis y calidad** encima.
+---
 
-## Cómo se ve en la práctica
+## Requisitos
 
-```text
-You: npx sdd-tools init
-CLI:  sdd.config.yaml, .cursor/commands, .cursor/skills, reglas SDD
-      ✓ impact, testgap, review, debt, context, decisions, handoff
+- **Node.js ≥ 18** (el proyecto publicado en npm es **ESM**).
+- **Cursor** — hoy `sdd-tools init` solo genera `.cursor/commands`, `.cursor/skills` y reglas para Cursor; otros IDEs están previstos.
+- Opcional: layout **OpenSpec** (`openspec/changes/…`, `openspec/specs/…`) o specs en markdown donde ya los tengas.
 
-You: npx sdd-tools impact analyze openspec/changes/add-readiness-probe-endpoint/
-CLI:  ✓ sdd-tools/add-readiness-probe-endpoint/impact.md
-      Riesgo, módulos afectados, requisitos SHALL/MUST resumidos, orden sugerido
+No necesitas cuenta ni API propia de sdd-tools: **todo es local** al repositorio donde ejecutes el CLI.
 
-You: npx sdd-tools testgap analyze openspec/changes/add-readiness-probe-endpoint/
-CLI:  ✓ sdd-tools/.../testgap.md — cobertura semántica vs proposal + specs/
+---
 
-You: npx sdd-tools review check openspec/changes/add-readiness-probe-endpoint/
-CLI:  ✓ sdd-tools/.../review.md — heurísticas sobre src/ (logs, TODO, any, …)
-```
-
-En Cursor, tras `init`, puedes usar comandos tipo **`/sdd-impact`** con la misma ruta de cambio.
-
-## Quick Start
-
-**Requiere Node.js 18 o superior** (proyecto **ESM**).
-
-### Desde el repositorio (desarrollo / local)
-
-```bash
-git clone <url-de-este-repositorio>
-cd <carpeta-del-clon>   # el nombre del directorio depende del repo (p. ej. sdd-kit)
-npm install
-npm run build
-```
-
-En **tu aplicación** (ajusta la ruta al clon):
-
-```bash
-cd ../mi-proyecto
-node ../<carpeta-del-clon>/dist/cli.js init
-node ../<carpeta-del-clon>/dist/cli.js impact analyze openspec/changes/mi-cambio/
-```
-
-Opcional: `npm link` dentro del clon y luego `npx sdd-tools …` en otros repos.
-
-### Cuando publiques en npm
+## Instalación
 
 ```bash
 npm install -g sdd-tools
-cd tu-proyecto && sdd-tools init
 ```
 
-*(Sustituye el nombre del paquete si publicas con scope, p. ej. `@tu-org/sdd-tools`.)*
-
-## Documentación (en este repo)
-
-→ **[Filosofía y flujo](#filosofía)** — principios y encaje con OpenSpec  
-→ **[Quick Start](#quick-start)** — instalación y primer `init`  
-→ **[Ver en la práctica](#cómo-se-ve-en-la-práctica)** — flujo tipo sesión con IA  
-→ **[Rutas de specs](#rutas-de-specs)** — qué acepta el CLI  
-→ **[Comandos](#comandos-del-cli)** — referencia rápida  
-→ **[Desarrollo del kit](#desarrollo-de-sdd-tools)** — `build`, `dev`, estructura `src/`  
-→ **[Convenciones](#convenciones)** — `sdd-tools/`, Windows, git opcional  
-→ **[Contribuir](#contribuir)** — PRs e issues  
-
-*(Si más adelante añades `docs/`, enlaza aquí `docs/getting-started.md`, etc.)*
-
-## Por qué sdd-tools
-
-Los asistentes de código son potentes, pero **sin señales estructuradas** el contexto se diluye: no queda claro qué código tocar, qué riesgo hay ni si los tests cubren los SHALL del spec.
-
-- **Antes de implementar** — `impact`: síntesis del cambio + dependencias en `src/`.
-- **Después de tests** — `testgap`: requisitos en `proposal.md` y `**/spec.md` vs tests encontrados.
-- **Calidad rápida** — `review`: heurísticas sobre validación, async, `console.log`, TODO, `any`.
-- **Continuidad** — `context`, `handoff`, `decisions` (ADR) bajo `sdd-tools/<feature>/`.
-
-### Cómo nos comparamos (sin malmeter)
-
-| Enfoque | Rol |
-|--------|-----|
-| **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** | Flujo y artefactos del cambio (`proposal`, `specs`, `tasks`, slash `/opsx:*`). |
-| **sdd-tools** | CLI pequeño: **informes** (`impact`, `testgap`, `review`, `debt`) + **plantillas Cursor** (`init`, `add`). Complementario. |
-| **Solo chat** | Sin specs ni informes: más impredecible al crecer el repo. |
-
-## Actualizar sdd-tools en un proyecto
-
-Tras hacer `git pull` en el clon de sdd-tools:
+O sin instalar global:
 
 ```bash
-cd sdd-tools && npm install && npm run build
+npx sdd-tools --help
 ```
 
-Si regeneraste plantillas del IDE y quieres sobrescribir lo generado por una versión antigua:
+Repositorio: [github.com/raulahumada/sdd-tools](https://github.com/raulahumada/sdd-tools)
+
+---
+
+## Inicio rápido
+
+### Proyecto que ya tiene código (y specs o cambios OpenSpec)
 
 ```bash
 cd tu-proyecto
-node ../sdd-tools/dist/cli.js init --force   # revisa antes: puede pisar .cursor/
+
+# 1. Estructura SDD + Cursor (elige openspec/changes, openspec/specs o ruta custom)
+sdd-tools init
+
+# 2. Impacto del cambio antes de tocar código
+sdd-tools impact analyze openspec/changes/mi-cambio/
+
+# 3. Cobertura de tests vs requisitos del spec
+sdd-tools testgap analyze openspec/changes/mi-cambio/
+
+# 4. Pasada rápida de calidad sobre el árbol fuente
+sdd-tools review check openspec/changes/mi-cambio/
 ```
+
+Los informes aparecen bajo **`sdd-tools/`** (por defecto). Puedes versionarlos o ignorarlos en `.gitignore`; `init` puede sugerir la entrada.
+
+### Proyecto nuevo
+
+```bash
+cd tu-proyecto
+sdd-tools init
+# Añade specs en openspec/changes/<cambio>/ o la ruta que configuraste
+# Luego: impact → testgap → review como arriba
+```
+
+En Cursor, tras `init`, puedes usar comandos tipo **`/sdd-impact`** pasando la misma ruta de carpeta del cambio.
+
+---
+
+## Cómo se mantiene “viva” la documentación de apoyo
+
+sdd-tools **no** reescribe tus `proposal.md` ni tus specs de OpenSpec. Lo que sí hace es **regenerar informes** cada vez que ejecutas un skill:
+
+| Acción | Qué se actualiza |
+|--------|-------------------|
+| `impact analyze <carpeta>` | `sdd-tools/<feature>/impact.md` — riesgo, módulos tocados, requisitos resumidos |
+| `testgap analyze <carpeta>` | `sdd-tools/.../testgap.md` — huecos entre SHALL/MUST y tests |
+| `review check [carpeta]` | `sdd-tools/.../review.md` — heurísticas (async, logs, TODO, `any`, …) |
+| `debt scan` / `debt trend` | `sdd-tools/debt/` — deuda técnica agregada |
+| `context` / `handoff` / `decisions` | Artefactos bajo `sdd-tools/<feature>/` según skill |
+
+Flujo mental:
+
+```
+Cambio en specs o en código  →  vuelves a ejecutar el skill  →  informes al día para humano e IA
+```
+
+---
+
+## Cómo encaja en tu árbol de proyecto
+
+Tras `init` (Cursor):
+
+```
+tu-proyecto/
+├── sdd.config.yaml              # specs_dir, spec_format, tools habilitados
+├── .cursor/
+│   ├── commands/                # sdd-impact, sdd-testgap, … (.mdc)
+│   ├── skills/sdd-*/          # SKILL.md por herramienta
+│   └── rules/                 # p. ej. sdd-skills.mdc
+└── sdd-tools/                   # salida de informes (no sustituye a openspec/)
+    ├── <feature>/impact.md
+    ├── <feature>/testgap.md
+    ├── …
+    └── debt/
+```
+
+Todo queda en **Markdown** y archivos de config en el repo. **Sin lock-in** de runtime: es CLI + plantillas.
+
+---
+
+## Filosofía (en viñetas)
+
+```text
+→ Ligero: no es un framework monolítico
+→ CLI primero: integrable en CI y en flujos con IA
+→ Informes legibles por humanos y por el modelo
+→ Brownfield: encaja con openspec/changes y specs sueltos
+→ Windows: rutas relativas y normalización explícita
+```
+
+> [!TIP]
+> Pasa siempre el **directorio** del cambio (p. ej. `openspec/changes/mi-feature/`), no solo un archivo suelto, para que impact/testgap/review vean `proposal.md`, `design.md`, `tasks.md` y `**/spec.md` en contexto.
+
+> [!NOTE]
+> Para el flujo *propose → apply → archive* de OpenSpec, mira la documentación de **[OpenSpec](https://github.com/Fission-AI/OpenSpec)**. **sdd-tools** es complementario: análisis, calidad y plantillas Cursor.
+
+---
+
+## Por qué existe (y comparación honesta)
+
+| Enfoque | Rol |
+|--------|-----|
+| **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** | Flujo y artefactos del cambio (`proposal`, specs, tasks, slash `/opsx:*`). |
+| **sdd-tools** | CLI: **informes** (`impact`, `testgap`, `review`, `debt`) + **continuidad** (`context`, `handoff`, `decisions`) + **init/add** para Cursor. |
+| **Solo chat** | Menos señal estructurada al crecer el repo. |
+
+---
 
 ## Comandos del CLI
 
@@ -143,10 +162,10 @@ node ../sdd-tools/dist/cli.js init --force   # revisa antes: puede pisar .cursor
 
 | Comando | Descripción |
 |---------|-------------|
-| `sdd-tools init` | Configura el proyecto. Flags: `--ide`, `--specs`, `--format`, `--all`, `--force`. |
+| `sdd-tools init` | Crea `sdd.config.yaml`, carpetas y plantillas Cursor. Flags: `--ide` (solo `cursor`), `--specs`, `--format` (`markdown` \| `openspec`), `--all`, `--force`. |
 | `sdd-tools add <skill>` | Añade skill: `impact`, `context`, `decisions`, `review`, `testgap`, `debt`, `handoff`. |
 | `sdd-tools remove <skill>` | Quita un skill. |
-| `sdd-tools status` | Estado de `sdd.config.yaml` y ficheros SDD. |
+| `sdd-tools status` | Muestra estado de `sdd.config.yaml` y artefactos SDD. |
 
 ### Skills (ejemplos)
 
@@ -171,26 +190,25 @@ sdd-tools handoff export --feature mi-feature
 sdd-tools handoff import --feature mi-feature
 ```
 
+---
+
 ## Rutas de specs
 
 | Convención | Ejemplo |
 |------------|---------|
-| Specs planos | `specs/mi-feature/` |
-| Cambio OpenSpec | `openspec/changes/add-mi-feature/` (**directorio** del cambio) |
-| Catálogo OpenSpec | `openspec/specs/...` si existe |
+| Cambio OpenSpec | `openspec/changes/<nombre-del-cambio>/` (**directorio** del cambio) |
+| Catálogo OpenSpec | `openspec/specs/…` |
+| Markdown / otras | Ruta **custom** configurada en `init` |
 
-Las rutas se resuelven **relativas al proyecto** (con `/`), evitando errores típicos de `path.join` en Windows con rutas absolutas.
+Las rutas se resuelven **relativas al proyecto** (normalizando separadores en Windows).
 
-## Convenciones
+---
 
-1. Pasa el **directorio** del cambio, no solo `proposal.md`.
-2. **`sdd-tools/`** — informes para humano/IA; añádelo a `.gitignore` si no quieres versionarlos.
-3. **Git** — opcional; context/handoff degradan con gracia si no hay repo.
-4. **Modelos** — impact/testgap/review son heurísticos; conviene modelos con buen razonamiento para interpretar los `.md` generados.
-
-## Desarrollo de sdd-tools
+## Desarrollo del proyecto
 
 ```bash
+git clone https://github.com/raulahumada/sdd-tools.git
+cd sdd-tools
 npm install
 npm run build    # tsc → dist/
 npm run dev      # tsx src/cli.ts
@@ -198,21 +216,37 @@ npm test
 npm run lint
 ```
 
+Probar el CLI en otro repo:
+
+```bash
+npm link
+cd ../otro-repo && sdd-tools --help
+```
+
 | Ruta | Contenido |
-|------|-----------|
+|------|------------|
 | `src/cli.ts` | Commander: comandos y skills. |
 | `src/commands/` | `init`, `add`, `remove`, `status`. |
 | `src/skills/` | `impact`, `review`, `testgap`, … |
 | `src/core/` | `SpecParser`, `ASTUtils`, `Store`, `GitUtils`. |
 | `src/templates/cursor/` | Plantillas de comandos, skills y reglas. |
+| `bin/sdd-tools.js` | Entrada npm global (carga `dist/cli.js`). |
+
+### Actualizar un proyecto ya inicializado
+
+Tras actualizar el paquete (`npm update -g sdd-tools` o nuevo build local), puedes regenerar plantillas con **`init --force`** (revisa antes: puede sobrescribir `.cursor/`).
+
+---
 
 ## Contribuir
 
-**Cambios pequeños** — typos, bugs claros, mejoras localizadas: PR directo.
+**Cambios pequeños** — typos, bugs claros, mejoras localizadas: PR bienvenido.
 
-**Cambios grandes** — nuevo skill, cambios de formato de informe o de `init`: abre un **issue** primero para alinear intención (IDEs soportados, compatibilidad con OpenSpec, etc.).
+**Cambios grandes** — nuevo skill, formato de informe o comportamiento de `init`: abre un **issue** para alinear (IDEs, OpenSpec, etc.).
 
-Los PRs con código generado por IA son bienvenidos si vienen **probados** (`npm run build`, flujo manual del CLI). Indica agente y modelo en la descripción del PR.
+Los PRs con código asistido por IA son bienvenidos si vienen **probados** (`npm run build`, prueba manual del CLI). Indica agente y modelo en la descripción del PR.
+
+---
 
 ## Otros
 
@@ -224,11 +258,13 @@ sdd-tools **no** envía telemetría: todo es local al repositorio donde ejecutes
 </details>
 
 <details>
-<summary><strong>Marca y nombre</strong></summary>
+<summary><strong>Marca y terceros</strong></summary>
 
-“sdd-tools” no está afiliado a OpenSpec ni a Fission AI; solo se documenta la **compatibilidad** de rutas con proyectos que ya usen OpenSpec.
+**sdd-tools** no está afiliado a OpenSpec ni a Fission AI; solo se documenta **compatibilidad de rutas** con proyectos que ya usen OpenSpec.
 
 </details>
+
+---
 
 ## Licencia
 
