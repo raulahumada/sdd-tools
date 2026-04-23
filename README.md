@@ -10,8 +10,8 @@
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <img alt="Node" src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
   <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-informational?style=flat-square" />
-  <!-- Sustituye cuando tengas CI publicado:
-  <a href="https://github.com/TU_ORG/sdd-tools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/TU_ORG/sdd-tools/actions/workflows/ci.yml/badge.svg" /></a>
+  <!-- Descomenta cuando tengas `.github/workflows/ci.yml` en el repo:
+  <a href="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml/badge.svg" /></a>
   -->
 </p>
 
