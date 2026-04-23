@@ -17,16 +17,16 @@ const program = new Command();
 program
   .name('sdd-tools')
   .description('Spec-Driven Development toolkit for AI-assisted coding')
-  .version('0.5.1');
+  .version('0.5.2');
 
 // ─── Management commands ───
 
 program
   .command('init')
   .description('Setup sdd-tools in your project')
-  .option('--ide <ide>', 'IDE to use (cursor, vscode, claude-code)')
-  .option('--specs <dir>', 'Specs directory')
-  .option('--format <format>', 'Spec format (markdown, openspec)')
+  .option('--ide <ide>', 'IDE (only cursor is supported)')
+  .option('--specs <dir>', 'Specs directory (e.g. openspec/changes, openspec/specs)')
+  .option('--format <format>', 'Spec format: markdown | openspec')
   .option('--all', 'Enable all tools')
   .option('--force', 'Overwrite existing files')
   .action(async (opts) => {

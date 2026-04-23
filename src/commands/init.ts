@@ -14,12 +14,13 @@ interface InitOptions {
   force?: boolean;
 }
 
-const AVAILABLE_IDES = [
+const IDE_CHOICES = [
   { name: 'Cursor', value: 'cursor' },
-  { name: 'VS Code + Copilot', value: 'vscode' },
-  { name: 'Claude Code', value: 'claude-code' },
-  { name: 'Windsurf', value: 'windsurf' },
-  { name: 'JetBrains AI', value: 'jetbrains' },
+  new inquirer.Separator('Coming soon:'),
+  { name: 'VS Code + Copilot', value: 'vscode', disabled: 'Not available yet' },
+  { name: 'Claude Code', value: 'claude-code', disabled: 'Not available yet' },
+  { name: 'Windsurf', value: 'windsurf', disabled: 'Not available yet' },
+  { name: 'JetBrains AI', value: 'jetbrains', disabled: 'Not available yet' },
 ];
 
 const AVAILABLE_TOOLS = [
@@ -33,15 +34,14 @@ const AVAILABLE_TOOLS = [
 ];
 
 const AVAILABLE_SPECS = [
-  { name: 'specs/', value: 'specs' },
-  { name: 'openspec/specs/', value: 'openspec/specs' },
-  { name: 'Custom path...', value: 'custom' },
+  { name: 'openspec/changes/ (OpenSpec change proposals)', value: 'openspec/changes' },
+  { name: 'openspec/specs/ (OpenSpec locked specs)', value: 'openspec/specs' },
+  { name: 'Custom path…', value: 'custom' },
 ];
 
 const AVAILABLE_FORMATS = [
   { name: 'Markdown (## headings)', value: 'markdown' },
-  { name: 'OpenSpec format', value: 'openspec' },
-  { name: 'Kiro format', value: 'kiro' },
+  { name: 'OpenSpec layout (proposal / spec deltas)', value: 'openspec' },
 ];
 
 export async function initProject(projectRoot: string, opts: InitOptions): Promise<void> {
@@ -62,12 +62,17 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
     enabledTools = AVAILABLE_TOOLS.map(t => t.value);
   }
 
+  if (ide && ide !== 'cursor') {
+    console.log(chalk.yellow('Only Cursor is supported for now; using cursor.'));
+    ide = 'cursor';
+  }
+
   if (!ide) {
     const answer = await inquirer.prompt([{
       type: 'list',
       name: 'ide',
-      message: 'What IDE are you using?',
-      choices: AVAILABLE_IDES,
+      message: 'Which IDE are you setting up?',
+      choices: IDE_CHOICES,
     }]);
     ide = answer.ide;
   }
@@ -76,7 +81,7 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
     const answer = await inquirer.prompt([{
       type: 'list',
       name: 'specs',
-      message: 'Where are your specs located?',
+      message: 'Where are your specs? (suggested OpenSpec paths or custom)',
       choices: AVAILABLE_SPECS,
     }]);
     specsDir = answer.specs;
@@ -85,10 +90,10 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
       const custom = await inquirer.prompt([{
         type: 'input',
         name: 'path',
-        message: 'Enter specs directory path:',
-        default: 'specs/',
+        message: 'Specs directory path (relative to project root):',
+        default: 'openspec/changes',
       }]);
-      specsDir = custom.path;
+      specsDir = custom.path.replace(/\\/g, '/').replace(/\/?$/, '') || 'openspec/changes';
     }
   }
 
@@ -96,10 +101,13 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
     const answer = await inquirer.prompt([{
       type: 'list',
       name: 'format',
-      message: 'What format are your specs?',
+      message: 'Spec format?',
       choices: AVAILABLE_FORMATS,
     }]);
     specFormat = answer.format;
+  } else if (specFormat !== 'markdown' && specFormat !== 'openspec') {
+    console.log(chalk.yellow(`Unknown --format "${specFormat}"; using openspec.`));
+    specFormat = 'openspec';
   }
 
   if (enabledTools.length === 0) {

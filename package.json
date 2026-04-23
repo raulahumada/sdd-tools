@@ -1,10 +1,10 @@
 {
   "name": "sdd-tools",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Spec-Driven Development toolkit for AI-assisted coding",
   "repository": {
     "type": "git",
-    "url": "https://github.com/raulahumada/sdd-tools.git"
+    "url": "git+https://github.com/raulahumada/sdd-tools.git"
   },
   "bugs": {
     "url": "https://github.com/raulahumada/sdd-tools/issues"
