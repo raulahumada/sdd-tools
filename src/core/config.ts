@@ -6,7 +6,7 @@ import { SDDConfig } from './types.js';
 export function loadConfig(projectRoot: string): SDDConfig {
   const configPath = join(projectRoot, 'sdd.config.yaml');
   if (!existsSync(configPath)) {
-    throw new Error('sdd.config.yaml not found. Run "npx sdd-kit init" first.');
+    throw new Error('sdd.config.yaml not found. Run "npx sdd-tools init" first.');
   }
   const content = readFileSync(configPath, 'utf-8');
   return parse(content).sdd as SDDConfig;

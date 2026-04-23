@@ -15,7 +15,7 @@ export async function addSkill(skill: string, projectRoot: string): Promise<void
 
   const configPath = join(projectRoot, 'sdd.config.yaml');
   if (!existsSync(configPath)) {
-    console.error(chalk.red('sdd-kit not initialized. Run "npx sdd-kit init" first.'));
+    console.error(chalk.red('sdd-tools not initialized. Run "npx sdd-tools init" first.'));
     process.exit(1);
   }
 
@@ -96,7 +96,7 @@ function getSkillSection(skill: string): string {
 - User asks you to implement a feature from \`specs/\`
 
 ### How to execute
-1. Run: \`npx sdd-kit impact analyze specs/<feature-name>/\`
+1. Run: \`npx sdd-tools impact analyze specs/<feature-name>/\`
 2. Read: \`sdd-tools/<feature-name>/impact.md\`
 3. Present the analysis BEFORE starting implementation`,
 
@@ -106,7 +106,7 @@ function getSkillSection(skill: string): string {
 - You just completed a task from tasks.md
 
 ### How to execute
-1. Run: \`npx sdd-kit review check specs/<feature-name>/\`
+1. Run: \`npx sdd-tools review check specs/<feature-name>/\`
 2. Read: \`sdd-tools/<feature-name>/review.md\`
 3. Fix ALL errors before marking task as done`,
 
@@ -116,7 +116,7 @@ function getSkillSection(skill: string): string {
 - You just finished writing a test suite
 
 ### How to execute
-1. Run: \`npx sdd-kit testgap analyze specs/<feature-name>/\`
+1. Run: \`npx sdd-tools testgap analyze specs/<feature-name>/\`
 2. Read: \`sdd-tools/<feature-name>/testgap.md\`
 3. If coverage < 100%, write the missing tests`,
 
@@ -127,7 +127,7 @@ function getSkillSection(skill: string): string {
 - You added a new dependency
 
 ### How to execute
-1. Run: \`npx sdd-kit decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\``,
+1. Run: \`npx sdd-tools decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\``,
 
     context: `## Skill: Session Context (WHEN starting/ending)
 
@@ -138,8 +138,8 @@ function getSkillSection(skill: string): string {
 - User says "where were we?"
 
 ### How to execute
-- SAVE: \`npx sdd-kit context save --feature <feature> --label "<description>"\`
-- LOAD: \`npx sdd-kit context load --feature <feature>\``,
+- SAVE: \`npx sdd-tools context save --feature <feature> --label "<description>"\`
+- LOAD: \`npx sdd-tools context load --feature <feature>\``,
 
     debt: `## Skill: Debt Tracking (AFTER completing a feature)
 
@@ -147,7 +147,7 @@ function getSkillSection(skill: string): string {
 - All tasks in tasks.md are done
 
 ### How to execute
-1. Run: \`npx sdd-kit debt scan\`
+1. Run: \`npx sdd-tools debt scan\`
 2. Read: \`sdd-tools/debt/report.md\``,
 
     handoff: `## Skill: Handoff (WHEN switching agents)
@@ -156,8 +156,8 @@ function getSkillSection(skill: string): string {
 - User says "handoff", "switch to <agent>"
 
 ### How to execute
-- EXPORT: \`npx sdd-kit handoff export --feature <feature>\`
-- IMPORT: \`npx sdd-kit handoff import --feature <feature>\``
+- EXPORT: \`npx sdd-tools handoff export --feature <feature>\`
+- IMPORT: \`npx sdd-tools handoff import --feature <feature>\``
   };
 
   return sections[skill] || '';

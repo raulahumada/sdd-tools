@@ -13,7 +13,7 @@ export async function reviewSkill(
   if (action === 'check') return check(specPath, projectRoot);
   if (action === 'patterns') return showPatterns(projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit review check <spec-path>' };
+  return { success: false, message: 'Usage: sdd-tools review check <spec-path>' };
 }
 
 async function check(specPath: string | undefined, projectRoot: string): Promise<SkillResult> {
@@ -265,7 +265,7 @@ function generateReviewReport(
   report += `## Próximos pasos sugeridos\n\n`;
   if (errors.length || warnings.length) {
     report +=
-      '1. Corregir cada error y, si aplica, las advertencias que afecten contrato o seguridad.\n2. Volver a ejecutar `npx sdd-kit review check` (con la misma ruta de feature si la usas).\n';
+      '1. Corregir cada error y, si aplica, las advertencias que afecten contrato o seguridad.\n2. Volver a ejecutar `npx sdd-tools review check` (con la misma ruta de feature si la usas).\n';
   } else {
     report +=
       '1. Revisar manualmente lógica de negocio, límites y casos borde (el pre-review no los cubre).\n2. Si aplica, sustituir `console.log` por logger o eliminarlo antes de merge a producción.\n';

@@ -15,7 +15,7 @@ import { handoffSkill } from './skills/handoff.js';
 const program = new Command();
 
 program
-  .name('sdd-kit')
+  .name('sdd-tools')
   .description('Spec-Driven Development toolkit for AI-assisted coding')
   .version('0.5.0');
 
@@ -23,7 +23,7 @@ program
 
 program
   .command('init')
-  .description('Setup sdd-kit in your project')
+  .description('Setup sdd-tools in your project')
   .option('--ide <ide>', 'IDE to use (cursor, vscode, claude-code)')
   .option('--specs <dir>', 'Specs directory')
   .option('--format <format>', 'Spec format (markdown, openspec)')
@@ -49,7 +49,7 @@ program
 
 program
   .command('status')
-  .description('Show current sdd-kit status')
+  .description('Show current sdd-tools status')
   .action(async () => {
     await showStatus(process.cwd());
   });

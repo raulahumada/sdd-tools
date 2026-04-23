@@ -10,7 +10,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "implement", "build", "start working on" referring to a spec
   
   ### How to execute
-  1. Run: \`npx sdd-kit impact analyze <ruta-spec-o-cambio>/\` (ej. \`openspec/changes/<change>/\` o \`specs/<feature>/\`)
+  1. Run: \`npx sdd-tools impact analyze <ruta-spec-o-cambio>/\` (ej. \`openspec/changes/<change>/\` o \`specs/<feature>/\`)
   2. Read: \`sdd-tools/<feature-name>/impact.md\`
   3. Present the analysis to the user BEFORE starting implementation
   
@@ -45,7 +45,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "review this", "check this", "is this good?"
   
   ### How to execute
-  1. Run: \`npx sdd-kit review check [openspec/changes/<change>/|specs/<feature>/]\` (argumento opcional; sin él el informe va a \`sdd-tools/review/review.md\`)
+  1. Run: \`npx sdd-tools review check [openspec/changes/<change>/|specs/<feature>/]\` (argumento opcional; sin él el informe va a \`sdd-tools/review/review.md\`)
   2. Read: \`sdd-tools/<feature-name>/review.md\`
   3. Fix ALL errors before marking task as done
   4. Fix warnings if quick fixes (< 2 min)
@@ -77,7 +77,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "are we covered?", "check test coverage"
   
   ### How to execute
-  1. Run: \`npx sdd-kit testgap analyze openspec/changes/<change>/\` o \`specs/<feature>/\`
+  1. Run: \`npx sdd-tools testgap analyze openspec/changes/<change>/\` o \`specs/<feature>/\`
   2. Read: \`sdd-tools/<feature-name>/testgap.md\`
   3. If coverage < 100%, write the missing tests
   4. Re-run to confirm 100%
@@ -108,7 +108,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - You made a significant refactor
   
   ### How to execute
-  1. Run: \`npx sdd-kit decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\`
+  1. Run: \`npx sdd-tools decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\`
   2. Brief mention, don't interrupt flow
   
   ### What counts as a decision
@@ -136,8 +136,8 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "where were we?", "continue"
   
   ### How to execute
-  - SAVE: \`npx sdd-kit context save --feature <feature> --label "<description>"\`
-  - LOAD: \`npx sdd-kit context load --feature <feature>\`
+  - SAVE: \`npx sdd-tools context save --feature <feature> --label "<description>"\`
+  - LOAD: \`npx sdd-tools context load --feature <feature>\`
   
   ### How to present after LOAD
   \`\`\`
@@ -168,7 +168,7 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "how's the codebase?", "check code quality"
   
   ### How to execute
-  1. Run: \`npx sdd-kit debt scan\`
+  1. Run: \`npx sdd-tools debt scan\`
   2. Read: \`sdd-tools/debt/report.md\`
   3. Report the trend
   
@@ -192,8 +192,8 @@ export function CURSOR_RULES(enabledTools: string[]): string {
   - User says "handoff", "switch to <agent>", "export context"
   
   ### How to execute
-  - EXPORT: \`npx sdd-kit handoff export --feature <feature>\`
-  - IMPORT: \`npx sdd-kit handoff import --feature <feature>\`
+  - EXPORT: \`npx sdd-tools handoff export --feature <feature>\`
+  - IMPORT: \`npx sdd-tools handoff import --feature <feature>\`
   
   ### How to present after IMPORT
   \`\`\`

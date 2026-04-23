@@ -13,7 +13,7 @@ export async function testgapSkill(
 
   if (action === 'analyze') return analyze(specPath!, projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit testgap analyze <spec-path>' };
+  return { success: false, message: 'Usage: sdd-tools testgap analyze <spec-path>' };
 }
 
 

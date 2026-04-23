@@ -11,7 +11,7 @@ export async function handoffSkill(
   if (action === 'export') return exportHandoff(rest, projectRoot);
   if (action === 'import') return importHandoff(rest, projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit handoff export|import [--feature <name>]' };
+  return { success: false, message: 'Usage: sdd-tools handoff export|import [--feature <name>]' };
 }
 
 async function exportHandoff(args: string[], projectRoot: string): Promise<SkillResult> {

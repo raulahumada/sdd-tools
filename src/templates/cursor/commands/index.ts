@@ -30,7 +30,7 @@ I'll analyze the spec and predict:
 
 2. **Run the impact analysis**
    \`\`\`bash
-   npx sdd-kit impact analyze {{args}}
+   npx sdd-tools impact analyze {{args}}
    \`\`\`
    Usa la ruta al **directorio del cambio** (barra final opcional); el informe **resume** esos \`.md\` y añade el análisis de dependencias en código.
 
@@ -99,14 +99,14 @@ I'll capture:
 When the user says "save progress", "save where we are":
 
 1. Ask feature name if not obvious
-2. Run: \`npx sdd-kit context save --feature <feature> --label "<description>"\`
+2. Run: \`npx sdd-tools context save --feature <feature> --label "<description>"\`
 3. Confirm: "Saved. <N>/<total> tasks completed."
 
 ### Load
 
 When the user says "where were we?", "continue":
 
-1. Run: \`npx sdd-kit context load --feature <feature>\`
+1. Run: \`npx sdd-tools context load --feature <feature>\`
 2. Present:
    \`\`\`
    <feature>: <N>/<total> tasks completed
@@ -121,7 +121,7 @@ When the user says "where were we?", "continue":
 ### List
 
 \`\`\`bash
-npx sdd-kit context list
+npx sdd-tools context list
 \`\`\`
 
 **Guardrails**
@@ -147,7 +147,7 @@ Capture and manage Architecture Decision Records (ADRs).
 ### Add
 
 \`\`\`bash
-npx sdd-kit decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."
+npx sdd-tools decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."
 \`\`\`
 
 If user just says "add decision" without details, ask:
@@ -161,13 +161,13 @@ Confirm: "Saved as ADR-<N>: <title>"
 ### List
 
 \`\`\`bash
-npx sdd-kit decisions list --feature <feature>
+npx sdd-tools decisions list --feature <feature>
 \`\`\`
 
 ### Search
 
 \`\`\`bash
-npx sdd-kit decisions search "<query>"
+npx sdd-tools decisions search "<query>"
 \`\`\`
 
 **What counts as a decision**
@@ -202,7 +202,7 @@ I'll check for:
 
 **Steps**
 
-1. Run: \`npx sdd-kit review check {{args}}\`
+1. Run: \`npx sdd-tools review check {{args}}\`
 2. Read: \`sdd-tools/<feature>/review.md\`
 3. Parse by severity:
    - 🔴 Errors: Must fix
@@ -232,7 +232,7 @@ This measures REQUIREMENT coverage, not line coverage.
 
 **Steps**
 
-1. Run: \`npx sdd-kit testgap analyze {{args}}\`
+1. Run: \`npx sdd-tools testgap analyze {{args}}\`
 2. Read: \`sdd-tools/<feature>/testgap.md\`
 3. Present:
    \`\`\`
@@ -268,13 +268,13 @@ Monitor the health of your codebase over time.
 
 ### Scan
 
-1. Run: \`npx sdd-kit debt scan\`
+1. Run: \`npx sdd-tools debt scan\`
 2. Read: \`sdd-tools/debt/report.md\`
 3. Present score, modules, and trend
 
 ### Trend
 
-1. Run: \`npx sdd-kit debt trend\`
+1. Run: \`npx sdd-tools debt trend\`
 2. Show debt history over time
 
 **When to run**
@@ -300,12 +300,12 @@ Transfer complete work context between agents, IDEs, or team members.
 
 ### Export
 
-1. Run: \`npx sdd-kit handoff export --feature <feature>\`
+1. Run: \`npx sdd-tools handoff export --feature <feature>\`
 2. Confirm: "Handoff exported. <N>/<total> tasks done."
 
 ### Import
 
-1. Run: \`npx sdd-kit handoff import --feature <feature>\`
+1. Run: \`npx sdd-tools handoff import --feature <feature>\`
 2. Check git state. Warn if diverged.
 3. Present full context:
    \`\`\`

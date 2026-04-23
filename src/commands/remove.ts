@@ -13,7 +13,7 @@ export async function removeSkill(skill: string, projectRoot: string): Promise<v
 
   const configPath = join(projectRoot, 'sdd.config.yaml');
   if (!existsSync(configPath)) {
-    console.error(chalk.red('sdd-kit not initialized. Run "npx sdd-kit init" first.'));
+    console.error(chalk.red('sdd-tools not initialized. Run "npx sdd-tools init" first.'));
     process.exit(1);
   }
 

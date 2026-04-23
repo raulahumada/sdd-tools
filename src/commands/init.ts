@@ -47,7 +47,7 @@ const AVAILABLE_FORMATS = [
 export async function initProject(projectRoot: string, opts: InitOptions): Promise<void> {
   console.log('');
   console.log(chalk.bold('╔══════════════════════════════════════╗'));
-  console.log(chalk.bold('║  SDD-Kit — Spec-Driven Development  ║'));
+  console.log(chalk.bold('║  SDD-Tools — Spec-Driven Development ║'));
   console.log(chalk.bold('╚══════════════════════════════════════╝'));
   console.log('');
 
@@ -113,7 +113,7 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
   }
 
   console.log('');
-  console.log(chalk.dim('Setting up sdd-kit...'));
+  console.log(chalk.dim('Setting up sdd-tools...'));
   console.log('');
 
   // ─── Create files ───
@@ -263,7 +263,7 @@ ${toolsConfig}
 
 function updateGitignore(projectRoot: string): void {
   const gitignorePath = join(projectRoot, '.gitignore');
-  const entry = '\n# SDD Kit\nsdd-tools/\n';
+  const entry = '\n# SDD Tools\nsdd-tools/\n';
 
   if (existsSync(gitignorePath)) {
     const content = readFileSync(gitignorePath, 'utf-8');

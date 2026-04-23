@@ -27,7 +27,7 @@ export async function impactSkill(
     return fullScan(projectRoot);
   }
 
-  return { success: false, message: 'Usage: sdd-kit impact analyze <spec-path>' };
+  return { success: false, message: 'Usage: sdd-tools impact analyze <spec-path>' };
 }
 
 async function analyze(specPath: string, projectRoot: string): Promise<SkillResult> {

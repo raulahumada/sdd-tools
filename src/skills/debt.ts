@@ -13,7 +13,7 @@ export async function debtSkill(
   if (action === 'scan') return scan(projectRoot);
   if (action === 'trend') return trend(projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit debt scan|trend' };
+  return { success: false, message: 'Usage: sdd-tools debt scan|trend' };
 }
 
 async function scan(projectRoot: string): Promise<SkillResult> {

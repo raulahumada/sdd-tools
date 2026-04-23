@@ -7,8 +7,8 @@ export async function showStatus(projectRoot: string): Promise<void> {
   const configPath = join(projectRoot, 'sdd.config.yaml');
 
   if (!existsSync(configPath)) {
-    console.log(chalk.red('sdd-kit not initialized in this project.'));
-    console.log('Run: npx sdd-kit init');
+    console.log(chalk.red('sdd-tools not initialized in this project.'));
+    console.log('Run: npx sdd-tools init');
     return;
   }
 

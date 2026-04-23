@@ -3,9 +3,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-impact
   description: Analyze what code will break before implementing a spec. Use when the user wants to implement a feature from specs/ or asks "what will this affect".
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -33,7 +33,7 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   2. **Run the impact analysis**
      \`\`\`bash
-     npx sdd-kit impact analyze {{args}}
+     npx sdd-tools impact analyze {{args}}
      \`\`\`
      Use the change/spec **directory** path (trailing slash optional). The report **summarizes** those docs (no full paste) plus dependency analysis.
   
@@ -78,9 +78,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-context
   description: Save and restore coding session context. Use when the user wants to save progress, resume work, or asks "where were we?".
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -103,14 +103,14 @@ export const CURSOR_SKILLS: Record<string, string> = {
   When the user says "save progress", "save where we are":
   
   1. Ask feature name if not obvious
-  2. Run: \`npx sdd-kit context save --feature <feature> --label "<description>"\`
+  2. Run: \`npx sdd-tools context save --feature <feature> --label "<description>"\`
   3. Confirm: "Saved. <N>/<total> tasks completed."
   
   ### Load
   
   When the user says "where were we?", "continue":
   
-  1. Run: \`npx sdd-kit context load --feature <feature>\`
+  1. Run: \`npx sdd-tools context load --feature <feature>\`
   2. Present:
      \`\`\`
      <feature>: <N>/<total> tasks completed
@@ -125,7 +125,7 @@ export const CURSOR_SKILLS: Record<string, string> = {
   ### List
   
   \`\`\`bash
-  npx sdd-kit context list
+  npx sdd-tools context list
   \`\`\`
   
   **Guardrails**
@@ -137,9 +137,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-decisions
   description: Capture architectural decisions as ADRs. Use when a significant design choice is made during implementation.
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -156,7 +156,7 @@ export const CURSOR_SKILLS: Record<string, string> = {
   When a non-trivial architectural choice is made:
   
   1. Gather information from context
-  2. Run: \`npx sdd-kit decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\`
+  2. Run: \`npx sdd-tools decisions add --feature <feature> --title "..." --context "..." --decision "..." --consequences "..."\`
   3. Confirm briefly: "ADR saved: <title>"
   
   ### What counts as a decision
@@ -169,12 +169,12 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   ### List
   \`\`\`bash
-  npx sdd-kit decisions list --feature <feature>
+  npx sdd-tools decisions list --feature <feature>
   \`\`\`
   
   ### Search
   \`\`\`bash
-  npx sdd-kit decisions search "<query>"
+  npx sdd-tools decisions search "<query>"
   \`\`\`
   
   **Guardrails**
@@ -186,9 +186,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-review
   description: Pre-review code based on learned patterns. Use after completing a task or before opening a PR.
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -208,7 +208,7 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   **Steps**
   
-  1. Run: \`npx sdd-kit review check {{args}}\` (optional path; default output folder \`review\`)
+  1. Run: \`npx sdd-tools review check {{args}}\` (optional path; default output folder \`review\`)
   2. Read: \`sdd-tools/<feature>/review.md\`
   3. Parse by severity:
      - 🔴 Errors: Must fix. WILL be caught in human review.
@@ -227,9 +227,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-testgap
   description: Check if all spec requirements have test coverage. Use after writing tests or before marking a feature complete.
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -242,7 +242,7 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   **Steps**
   
-  1. Run: \`npx sdd-kit testgap analyze {{args}}\` (e.g. \`openspec/changes/<change>/\`)
+  1. Run: \`npx sdd-tools testgap analyze {{args}}\` (e.g. \`openspec/changes/<change>/\`)
   2. Read: \`sdd-tools/<feature>/testgap.md\`
   3. Present:
      \`\`\`
@@ -265,9 +265,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-debt
   description: Track technical debt over time. Use after completing a feature or when asking about codebase health.
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -281,13 +281,13 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   ### Scan
   
-  1. Run: \`npx sdd-kit debt scan\`
+  1. Run: \`npx sdd-tools debt scan\`
   2. Read: \`sdd-tools/debt/report.md\`
   3. Present score, modules, and trend
   
   ### Trend
   
-  1. Run: \`npx sdd-kit debt trend\`
+  1. Run: \`npx sdd-tools debt trend\`
   2. Show debt history over time
   
   **When to run**
@@ -300,9 +300,9 @@ export const CURSOR_SKILLS: Record<string, string> = {
   name: sdd-handoff
   description: Export or import full context between AI agents or developers. Use when switching agents, IDEs, or handing off to another person.
   license: MIT
-  compatibility: Requires sdd-kit CLI.
+  compatibility: Requires sdd-tools CLI.
   metadata:
-    author: sdd-kit
+    author: sdd-tools
     version: "0.1.0"
   ---
   
@@ -318,14 +318,14 @@ export const CURSOR_SKILLS: Record<string, string> = {
   
   When the user says "handoff" or "switch agent":
   
-  1. Run: \`npx sdd-kit handoff export --feature <feature>\`
+  1. Run: \`npx sdd-tools handoff export --feature <feature>\`
   2. Confirm: "Handoff exported. <N>/<total> tasks done."
   
   ### Import
   
   When the user says "continue from handoff":
   
-  1. Run: \`npx sdd-kit handoff import --feature <feature>\`
+  1. Run: \`npx sdd-tools handoff import --feature <feature>\`
   2. Check git state. Warn if diverged.
   3. Present full context:
      \`\`\`

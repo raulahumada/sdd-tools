@@ -12,7 +12,7 @@ export async function contextSkill(
   if (action === 'load') return load(rest, projectRoot);
   if (action === 'list') return list(rest, projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit context save|load|list [--feature <name>]' };
+  return { success: false, message: 'Usage: sdd-tools context save|load|list [--feature <name>]' };
 }
 
 async function save(args: string[], projectRoot: string): Promise<SkillResult> {

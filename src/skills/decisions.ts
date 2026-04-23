@@ -11,7 +11,7 @@ export async function decisionsSkill(
   if (action === 'list') return list(rest, projectRoot);
   if (action === 'search') return search(rest, projectRoot);
 
-  return { success: false, message: 'Usage: sdd-kit decisions add|list|search' };
+  return { success: false, message: 'Usage: sdd-tools decisions add|list|search' };
 }
 
 async function add(args: string[], projectRoot: string): Promise<SkillResult> {
