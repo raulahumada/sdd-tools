@@ -9,7 +9,7 @@
 <p align="center">
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <img alt="Node" src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.2-informational?style=flat-square" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.3-informational?style=flat-square" />
   <!-- Descomenta cuando tengas `.github/workflows/ci.yml` en el repo:
   <a href="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml/badge.svg" /></a>
   -->
@@ -29,7 +29,12 @@ Describe el cambio en specs  →  sdd-tools analiza y escribe informes  →  tú
 
 - **Node.js ≥ 18** (el proyecto publicado en npm es **ESM**).
 - **Cursor** — hoy `sdd-tools init` solo genera `.cursor/commands`, `.cursor/skills` y reglas para Cursor; otros IDEs están previstos.
-- Opcional: layout **OpenSpec** (`openspec/changes/…`, `openspec/specs/…`) o specs en markdown donde ya los tengas.
+- **OpenSpec (recomendado)** — `impact`, `testgap` y `review` asumen el layout `openspec/changes` y `openspec/specs`. Si aún no lo tienes, instala el CLI e inicializa el repo:
+  ```bash
+  npm install -g @fission-ai/openspec@latest
+  openspec init
+  ```
+  Tras `sdd-tools init`, el CLI te avisa si no detecta ese layout; con `sdd-tools status` ves una línea **OpenSpec: ✓ / ✗** y el comando sugerido.
 
 No necesitas cuenta ni API propia de sdd-tools: **todo es local** al repositorio donde ejecutes el CLI.
 

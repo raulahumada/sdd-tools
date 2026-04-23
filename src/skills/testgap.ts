@@ -4,6 +4,7 @@ import { Store } from '../core/store.js';
 import { SkillResult, Requirement, TestCase, RequirementCoverage } from '../core/types.js';
 import { basename, join } from 'path';
 import { glob } from 'glob';
+import { warnOpenSpecIfExpected } from '../core/openspec-check.js';
 
 export async function testgapSkill(
   args: string[],
@@ -18,6 +19,7 @@ export async function testgapSkill(
 
 
 async function analyze(specPath: string, projectRoot: string): Promise<SkillResult> {
+  warnOpenSpecIfExpected(projectRoot);
   const parser = new SpecParser(projectRoot);
   const ast = new ASTUtils(projectRoot);
   const store = new Store(projectRoot);

@@ -3,6 +3,7 @@ import { ASTUtils } from '../core/ast-utils.js';
 import { SkillResult, ReviewIssue } from '../core/types.js';
 import { readFileSync, existsSync } from 'fs';
 import { basename, join } from 'path';
+import { warnOpenSpecIfExpected } from '../core/openspec-check.js';
 
 export async function reviewSkill(
   args: string[],
@@ -17,6 +18,7 @@ export async function reviewSkill(
 }
 
 async function check(specPath: string | undefined, projectRoot: string): Promise<SkillResult> {
+  warnOpenSpecIfExpected(projectRoot);
   const store = new Store(projectRoot);
   const ast = new ASTUtils(projectRoot);
 

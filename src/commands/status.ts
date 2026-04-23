@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 import { loadConfig } from '../core/config.js';
+import { isOpenSpecWorkspace } from '../core/openspec-check.js';
 
 export async function showStatus(projectRoot: string): Promise<void> {
   const configPath = join(projectRoot, 'sdd.config.yaml');
@@ -15,10 +16,20 @@ export async function showStatus(projectRoot: string): Promise<void> {
   const config = loadConfig(projectRoot);
 
   console.log('');
-  console.log(chalk.bold('SDD-Kit Status'));
+  console.log(chalk.bold('sdd-tools status'));
   console.log('');
   console.log(`  IDE: ${config.ide}`);
   console.log(`  Specs: ${config.specs_dir} (${config.spec_format} format)`);
+  const osOk = isOpenSpecWorkspace(projectRoot);
+  console.log(
+    `  OpenSpec: ${osOk ? chalk.green('✓ layout (openspec/changes o openspec/specs)') : chalk.yellow('✗ no detectado')}`
+  );
+  if (!osOk) {
+    console.log(
+      chalk.dim('           → npm install -g @fission-ai/openspec@latest && openspec init')
+    );
+    console.log(chalk.dim('           → https://github.com/Fission-AI/OpenSpec'));
+  }
   console.log('');
 
   console.log('  Skills:');

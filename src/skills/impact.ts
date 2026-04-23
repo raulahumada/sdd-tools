@@ -7,6 +7,7 @@ import { SkillResult, ImpactResult } from '../core/types.js';
 import { readFileSync, existsSync } from 'fs';
 import { basename, join } from 'path';
 import { glob } from 'glob';
+import { warnOpenSpecIfExpected } from '../core/openspec-check.js';
 
 interface SpecDocument {
   relativePath: string;
@@ -31,6 +32,7 @@ export async function impactSkill(
 }
 
 async function analyze(specPath: string, projectRoot: string): Promise<SkillResult> {
+  warnOpenSpecIfExpected(projectRoot);
   const parser = new SpecParser(projectRoot);
   const ast = new ASTUtils(projectRoot);
   const store = new Store(projectRoot);
@@ -57,6 +59,7 @@ async function analyze(specPath: string, projectRoot: string): Promise<SkillResu
 }
 
 async function fullScan(projectRoot: string): Promise<SkillResult> {
+  warnOpenSpecIfExpected(projectRoot);
   const parser = new SpecParser(projectRoot);
   const specs = await parser.findAllSpecs();
 
