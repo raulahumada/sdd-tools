@@ -9,7 +9,7 @@
 <p align="center">
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <img alt="Node" src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=nodedotjs&logoColor=white" />
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.3-informational?style=flat-square" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.4-informational?style=flat-square" />
   <!-- Descomenta cuando tengas `.github/workflows/ci.yml` en el repo:
   <a href="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/raulahumada/sdd-tools/actions/workflows/ci.yml/badge.svg" /></a>
   -->

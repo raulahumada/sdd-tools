@@ -17,7 +17,7 @@ const program = new Command();
 program
   .name('sdd-tools')
   .description('Spec-Driven Development toolkit for AI-assisted coding')
-  .version('0.5.3');
+  .version('0.5.4');
 
 // ─── Management commands ───
 

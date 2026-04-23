@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import { CURSOR_RULES } from '../templates/cursor/rules/sdd-skills.js';
 import { CURSOR_SKILLS } from '../templates/cursor/skills/index.js';
 import { CURSOR_COMMANDS } from '../templates/cursor/commands/index.js';
-import { reportOpenSpecLayoutAfterInit } from '../core/openspec-check.js';
+import { reportOpenSpecDuringInit } from '../core/openspec-check.js';
 
 interface InitOptions {
   ide?: string;
@@ -122,6 +122,11 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
   }
 
   console.log('');
+  reportOpenSpecDuringInit(
+    projectRoot,
+    { specsDir: specsDir!, specFormat: specFormat! },
+    'before'
+  );
   console.log(chalk.dim('Setting up sdd-tools...'));
   console.log('');
 
@@ -144,10 +149,11 @@ export async function initProject(projectRoot: string, opts: InitOptions): Promi
   updateGitignore(projectRoot);
 
   console.log('');
-  reportOpenSpecLayoutAfterInit(projectRoot, {
-    specsDir: specsDir!,
-    specFormat: specFormat!,
-  });
+  reportOpenSpecDuringInit(
+    projectRoot,
+    { specsDir: specsDir!, specFormat: specFormat! },
+    'after'
+  );
 
   // ─── Done ───
 
